@@ -1,0 +1,41 @@
+﻿<Window x:Class="TimeRecording.View.RecordDetailsView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Zeiterfassung - Details anzeigen"
+        Icon="../Resources/Icon.png"
+        Height="352"
+        Width="419.8"
+        ResizeMode="NoResize"
+        WindowStyle="ToolWindow"
+        WindowStartupLocation="CenterOwner"
+        ShowInTaskbar="False">
+    <Grid Margin="0,0,4,1">
+
+        <Label Content="Arbeitszeiten zu Aktivität: "
+               HorizontalAlignment="Left"
+               Margin="10,10,0,0"
+               VerticalAlignment="Top" />
+        <Label Content="{Binding ActivityDescription}"
+               Margin="162,10,10,0"
+               VerticalAlignment="Top" />
+
+        <ListView TabIndex="0"
+                  Margin="10,41,10,10"
+                  ItemsSource="{Binding ActivityTimes, UpdateSourceTrigger=PropertyChanged}">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Width="140"
+                                    Header="Arbeitsbeginn"
+                                    DisplayMemberBinding="{Binding StartTime, StringFormat='{}{0:dd.MM.yyyy H:mm U\\hr}'}" />
+                    <GridViewColumn Width="140"
+                                    Header="Arbeitsende"
+                                    DisplayMemberBinding="{Binding EndTime, StringFormat='{}{0:dd.MM.yyyy H:mm U\\hr}'}" />
+                    <GridViewColumn Width="100"
+                                    Header="Arbeitsdauer"
+                                    DisplayMemberBinding="{Binding Duration, StringFormat=hh\\:mm\\:ss}" />
+                </GridView>
+            </ListView.View>
+        </ListView>
+
+    </Grid>
+</Window>
