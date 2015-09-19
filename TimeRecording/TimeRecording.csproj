@@ -113,6 +113,7 @@
     <Compile Include="Reporting\Excel\ExcelReport.cs" />
     <Compile Include="Reporting\Text\TextReport.cs" />
     <Compile Include="TimeCalculation\WorkingTimeCalculator.cs" />
+    <Compile Include="ViewModel\CreditsViewModel.cs" />
     <Compile Include="ViewModel\ProjectDayDetailsViewModel.cs" />
     <Compile Include="ViewModel\ProjectDetailsViewModel.cs" />
     <Compile Include="ViewModel\RecordDetailsViewModel.cs" />
@@ -122,6 +123,9 @@
     <Compile Include="Model\IRepository.cs" />
     <Compile Include="View\CreateProjectView.xaml.cs">
       <DependentUpon>CreateProjectView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\CreditsView.xaml.cs">
+      <DependentUpon>CreditsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\ProjectDayDetailsView.xaml.cs">
       <DependentUpon>ProjectDayDetailsView.xaml</DependentUpon>
@@ -140,6 +144,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="View\CreateProjectView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\CreditsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -212,7 +220,9 @@
   <ItemGroup>
     <Resource Include="Icon.ico" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="Resources\Developer_Logo.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -184,7 +184,8 @@ namespace TimeRecording.ViewModel
         public ICommand ShowDetailsCommand { get; set; }
         public ICommand ShowProjectDetailsCommand { get; set; }
         public ICommand ShowProjectDayDetailsCommand { get; set; }
-        public ICommand ShowHelpCommand { get; set; }
+        public ICommand ShowOnlineHelpCommand { get; set; }
+        public ICommand ShowCreditsCommand { get; set; }
         public ICommand ExportReportCommand { get; set; }
 
         private void InitCommands()
@@ -197,9 +198,19 @@ namespace TimeRecording.ViewModel
             ShowDetailsCommand = new RelayCommand(o => ShowDetailsHandler(), o => ShowDetailsCondition());
             ShowProjectDetailsCommand = new RelayCommand(o => ShowProjectDetailsHandler(), o => ShowProjectDetailsCondition());
             ShowProjectDayDetailsCommand = new RelayCommand(o => ShowProjectDayDetailsHandler(), o => ShowProjectDayDetailsCondition());
-            ShowHelpCommand = new RelayCommand(o => ShowHelpHandler(), o => true);
+            ShowOnlineHelpCommand = new RelayCommand(o => ShowOnlineHelpHandler(), o => true);
+            ShowCreditsCommand = new RelayCommand(o => ShowCreditsHandler(), o => true);
             ExportReportCommand = new RelayCommand(o => ExportReportHandler(), o => ExportReportCondition());
         }
+
+        #region Show Credits
+
+        private void ShowCreditsHandler()
+        {
+            NavigatorFactory.MyNavigator.NavigateTo(new CreditsViewModel());
+        }
+
+        #endregion
 
         #region Export Report
 
@@ -236,7 +247,7 @@ namespace TimeRecording.ViewModel
 
         #region Show Help
 
-        private void ShowHelpHandler()
+        private void ShowOnlineHelpHandler()
         {
             System.Diagnostics.Process.Start("http://ittner.it/");
         }

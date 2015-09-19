@@ -36,8 +36,12 @@
                 <MenuItem Header="_Zeiten anzeigen"
                           Command="{Binding ShowDetailsCommand}" />
             </MenuItem>
-            <MenuItem Header="_Hilfe"
-                      Command="{Binding ShowHelpCommand}"></MenuItem>
+            <MenuItem Header="_?">
+                <MenuItem Header="_Online Hilfe"
+                          Command="{Binding ShowOnlineHelpCommand}" />
+                <MenuItem Header="_Info"
+                          Command="{Binding ShowCreditsCommand}" />
+            </MenuItem>
         </Menu>
 
         <!-- Next Row -->
@@ -103,7 +107,7 @@
                          Margin="74,0,0,0" />
 
                 <Button TabIndex="3"
-                        Content="Neu ..."
+                        Content="Neu"
                         Command="{Binding Path=CreateActivityCommand}"
                         HorizontalAlignment="Left"
                         VerticalAlignment="Top"

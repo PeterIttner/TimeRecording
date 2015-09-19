@@ -18,6 +18,7 @@ namespace TimeRecording.Common.Navigation
             NavigatorFactory.MyNavigator.Register(typeof(MainViewModel), typeof(RecordView));
             NavigatorFactory.MyNavigator.Register(typeof(ProjectDetailsViewModel), typeof(ProjectDetailsView));
             NavigatorFactory.MyNavigator.Register(typeof(ProjectDayDetailsViewModel), typeof(ProjectDayDetailsView));
+            NavigatorFactory.MyNavigator.Register(typeof(CreditsViewModel), typeof(CreditsView));
 
             NavigatorFactory.MyNavigator.NavigateTo(new MainViewModel());
         }
