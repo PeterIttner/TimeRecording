@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -44,6 +45,11 @@ namespace TimeRecording.Common.Navigation
                 mCurrentWindows.RemoveLast();
                 currentWindow.Close();
             }
+        }
+
+        public bool? NavigateToSystemDialog(CommonDialog dialog)
+        {
+            return dialog.ShowDialog(mCurrentWindows.Last.Value);
         }
 
         public void Register(Type viewModelType, Type viewType)

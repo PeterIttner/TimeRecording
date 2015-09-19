@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -12,5 +13,6 @@ namespace TimeRecording.Common.Navigation
         void NavigateTo(INotifyPropertyChanged viewModel);
         void NavigateBack();
         void Register(Type viewModelType, Type viewType);
+        bool? NavigateToSystemDialog(CommonDialog dialog);
     }
 }

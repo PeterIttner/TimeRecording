@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.Win32;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -15,6 +16,9 @@ using TimeRecording.Common;
 using TimeRecording.Common.Logging;
 using TimeRecording.Common.Navigation;
 using TimeRecording.Model;
+using TimeRecording.Reporting;
+using TimeRecording.Reporting.Excel;
+using TimeRecording.Reporting.Text;
 using TimeRecording.TimeCalculation;
 using TimeRecording.View;
 
@@ -25,10 +29,10 @@ namespace TimeRecording.ViewModel
         #region Member
 
         private ILogger Logger = LoggerFactory.CurrentLogger;
-        public IRepository MyRepository = RepositoryFactory.CurrentRepository;
-        
+        private IRepository MyRepository = RepositoryFactory.CurrentRepository;
+
         private Stopwatch mStopwatch = new Stopwatch();
-        public WorkingTimeCalculator mCalculator = new WorkingTimeCalculator();
+        private WorkingTimeCalculator mCalculator = new WorkingTimeCalculator();
 
         #endregion
 
@@ -181,6 +185,7 @@ namespace TimeRecording.ViewModel
         public ICommand ShowProjectDetailsCommand { get; set; }
         public ICommand ShowProjectDayDetailsCommand { get; set; }
         public ICommand ShowHelpCommand { get; set; }
+        public ICommand ExportReportCommand { get; set; }
 
         private void InitCommands()
         {
@@ -193,7 +198,41 @@ namespace TimeRecording.ViewModel
             ShowProjectDetailsCommand = new RelayCommand(o => ShowProjectDetailsHandler(), o => ShowProjectDetailsCondition());
             ShowProjectDayDetailsCommand = new RelayCommand(o => ShowProjectDayDetailsHandler(), o => ShowProjectDayDetailsCondition());
             ShowHelpCommand = new RelayCommand(o => ShowHelpHandler(), o => true);
+            ExportReportCommand = new RelayCommand(o => ExportReportHandler(), o => ExportReportCondition());
         }
+
+        #region Export Report
+
+        private bool ExportReportCondition()
+        {
+            return Projects.Count > 0 && SelectedProject != null && NotInProgress;
+        }
+
+        private void ExportReportHandler()
+        {
+            var dialog = new SaveFileDialog();
+            dialog.AddExtension = true;
+            dialog.CheckFileExists = false;
+            dialog.CheckPathExists = true;
+            dialog.CreatePrompt = false;
+            dialog.Filter = "Text-Bericht|*.txt|Excel-Bericht|*.xls";
+            dialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
+            dialog.Title = "Arbeitszeitbericht speichern";
+            dialog.FileName = "Bericht-" + SelectedProject.Name;
+            if (NavigatorFactory.MyNavigator.NavigateToSystemDialog(dialog) == true)
+            {
+                if (dialog.SafeFileName.EndsWith(".txt"))
+                {
+                    new TextReport(SelectedProject).ExportReport(dialog.FileName);
+                }
+                else if (dialog.SafeFileName.EndsWith(".xls"))
+                {
+                    new ExcelReport(SelectedProject).ExportReport(dialog.FileName);
+                }
+            }
+        }
+
+        #endregion
 
         #region Show Help
 
