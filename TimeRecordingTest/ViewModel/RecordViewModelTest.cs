@@ -16,7 +16,7 @@ namespace TimeRecordingTest.ViewModel
     [TestClass]
     public class RecordViewModelTest
     {
-        private RecordViewModel viewModel;
+        private MainViewModel viewModel;
         private Activity mockActivity = new Activity();
 
         [TestInitialize]
@@ -54,7 +54,7 @@ namespace TimeRecordingTest.ViewModel
             repository.Setup(r => r.GetProjects()).Returns(projects);
             RepositoryFactory.CurrentRepository = repository.Object;
                         
-            viewModel = new RecordViewModel();
+            viewModel = new MainViewModel();
         }
 
         [TestMethod]

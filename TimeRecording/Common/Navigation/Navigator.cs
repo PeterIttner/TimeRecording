@@ -31,7 +31,7 @@ namespace TimeRecording.Common.Navigation
                     }
                     mCurrentWindows.AddLast(view);
                     view.DataContext = viewModel;
-                    view.Show();
+                    view.ShowDialog();
                 }
             }
         }

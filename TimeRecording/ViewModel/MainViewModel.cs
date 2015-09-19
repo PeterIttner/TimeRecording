@@ -15,23 +15,26 @@ using TimeRecording.Common;
 using TimeRecording.Common.Logging;
 using TimeRecording.Common.Navigation;
 using TimeRecording.Model;
+using TimeRecording.TimeCalculation;
 using TimeRecording.View;
 
 namespace TimeRecording.ViewModel
 {
-    public class RecordViewModel : INotifyPropertyChanged
+    public class MainViewModel : INotifyPropertyChanged
     {
         #region Member
 
         private ILogger Logger = LoggerFactory.CurrentLogger;
-        private Stopwatch mStopwatch = new Stopwatch();
         public IRepository MyRepository = RepositoryFactory.CurrentRepository;
+        
+        private Stopwatch mStopwatch = new Stopwatch();
+        public WorkingTimeCalculator mCalculator = new WorkingTimeCalculator();
 
         #endregion
 
         #region Creation / Destcruction
 
-        public RecordViewModel()
+        public MainViewModel()
         {
             Logger.Info("Application started");
             InitCommands();
@@ -45,11 +48,11 @@ namespace TimeRecording.ViewModel
                 {
                     SelectedActivity = Activities.First();
                 }
-                TotalDuration = FormatTotalDuration(CalculateTotalDuration(SelectedProject));
+                TotalDuration = FormatTotalDuration(mCalculator.CalculateTotalDuration(SelectedProject));
             }
         }
 
-        ~RecordViewModel()
+        ~MainViewModel()
         {
             if (StopWorkCommand.CanExecute(null))
             {
@@ -87,7 +90,7 @@ namespace TimeRecording.ViewModel
             set
             {
                 mSelectedProject = value;
-                TotalDuration = FormatTotalDuration(CalculateTotalDuration(value));
+                TotalDuration = FormatTotalDuration(mCalculator.CalculateTotalDuration(value));
                 Activities = value == null ? null : value.Activities;
                 SelectedActivity = null;
 
@@ -175,6 +178,9 @@ namespace TimeRecording.ViewModel
         public ICommand CreateProjectCommand { get; set; }
         public ICommand DeleteActivityCommand { get; set; }
         public ICommand ShowDetailsCommand { get; set; }
+        public ICommand ShowProjectDetailsCommand { get; set; }
+        public ICommand ShowProjectDayDetailsCommand { get; set; }
+        public ICommand ShowHelpCommand { get; set; }
 
         private void InitCommands()
         {
@@ -184,7 +190,48 @@ namespace TimeRecording.ViewModel
             CreateProjectCommand = new RelayCommand(o => CreateProjectHandler(), o => CreateProjectCondition());
             DeleteActivityCommand = new RelayCommand(o => DeleteActivityHandler(), o => DeleteActivityCondition());
             ShowDetailsCommand = new RelayCommand(o => ShowDetailsHandler(), o => ShowDetailsCondition());
+            ShowProjectDetailsCommand = new RelayCommand(o => ShowProjectDetailsHandler(), o => ShowProjectDetailsCondition());
+            ShowProjectDayDetailsCommand = new RelayCommand(o => ShowProjectDayDetailsHandler(), o => ShowProjectDayDetailsCondition());
+            ShowHelpCommand = new RelayCommand(o => ShowHelpHandler(), o => true);
         }
+
+        #region Show Help
+
+        private void ShowHelpHandler()
+        {
+            System.Diagnostics.Process.Start("http://ittner.it/");
+        }
+
+        #endregion
+
+        #region Show Project Day Details
+
+        private bool ShowProjectDayDetailsCondition()
+        {
+            return NotInProgress && Projects.Count > 0 && SelectedProject != null;
+        }
+
+        private void ShowProjectDayDetailsHandler()
+        {
+            NavigatorFactory.MyNavigator.NavigateTo(new ProjectDayDetailsViewModel(SelectedProject));
+        }
+
+        #endregion
+
+        #region Show Project Details
+
+        private void ShowProjectDetailsHandler()
+        {
+            var showProjectDetailsVm = new ProjectDetailsViewModel(SelectedProject);
+            NavigatorFactory.MyNavigator.NavigateTo(showProjectDetailsVm);
+        }
+
+        private bool ShowProjectDetailsCondition()
+        {
+            return NotInProgress && Projects.Count > 0 && SelectedProject != null;
+        }
+
+        #endregion
 
         #region Create Project
 
@@ -194,11 +241,12 @@ namespace TimeRecording.ViewModel
         }
 
         private void CreateProjectHandler()
-        {           
+        {
             var craeteProjectViewModel = new CreateProjectViewModel(Projects);
             NavigatorFactory.MyNavigator.NavigateTo(craeteProjectViewModel);
             var newProject = Projects.FirstOrDefault(p => p.Name.Equals(craeteProjectViewModel.ProjectName));
-            if(newProject != null) {
+            if (newProject != null)
+            {
                 SelectedProject = newProject;
             }
         }
@@ -226,7 +274,7 @@ namespace TimeRecording.ViewModel
 
         private void CreateActivityHandler()
         {
-            var activity = new Activity { Description = "Neue Beschreibung ..." };
+            var activity = new Activity { Description = "Neue Beschreibung ...", LatestWork = DateTime.Now };
             SelectedProject.Activities.Add(activity);
             Activities = SelectedProject.Activities;
             SelectedActivity = activity;
@@ -248,7 +296,7 @@ namespace TimeRecording.ViewModel
             Activities.Remove(SelectedActivity);
             SelectedProject.Activities = Activities;
             SelectedActivity = Activities.OrderByDescending(a => a.LatestWork).FirstOrDefault();
-            TotalDuration = FormatTotalDuration(CalculateTotalDuration(SelectedProject));
+            TotalDuration = FormatTotalDuration(mCalculator.CalculateTotalDuration(SelectedProject));
             NotifyPropertyChanged("EditActivityCondition");
             NotifyPropertyChanged("SelectActivityCondition");
         }
@@ -308,37 +356,14 @@ namespace TimeRecording.ViewModel
             var startTime = endTime - mStopwatch.Elapsed;
 
             SelectedActivity.ActivityTimes.Add(new ActivityTime { StartTime = startTime, EndTime = endTime });
-            SelectedActivity.Duration = CalculateDuration(SelectedActivity);
+            SelectedActivity.Duration = mCalculator.CalculateDuration(SelectedActivity);
             SelectedActivity.LatestWork = endTime;
-            TotalDuration = FormatTotalDuration(CalculateTotalDuration(SelectedProject));
+            TotalDuration = FormatTotalDuration(mCalculator.CalculateTotalDuration(SelectedProject));
             InProgress = false;
             NotifyPropertyChanged("SelectProjectCondition");
             NotifyPropertyChanged("EditActivityCondition");
             NotifyPropertyChanged("SelectActivityCondition");
             NotifyPropertyChanged("ShowDetailsCondition");
-        }
-
-        private TimeSpan CalculateDuration(Activity activity)
-        {
-            TimeSpan totalTime = new TimeSpan(0);
-            foreach (var activeTime in activity.ActivityTimes)
-            {
-                totalTime += activeTime.Duration;
-            }
-            return totalTime;
-        }
-
-        private TimeSpan CalculateTotalDuration(Project project)
-        {
-            TimeSpan totalTime = new TimeSpan(0);
-            if (project != null)
-            {
-                foreach (var activity in project.Activities)
-                {
-                    totalTime += activity.Duration;
-                }
-            }
-            return totalTime;
         }
 
         #endregion

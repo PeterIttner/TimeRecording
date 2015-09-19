@@ -4,34 +4,56 @@
         xmlns:z="http://schemas.microsoft.com/expression/2010/interactivity"
         Title="Zeiterfassung"
         Icon="../Resources/Icon.png"
-        Height="375"
-        Width="625"
+        Height="414"
+        Width="659"
         MinHeight="375"
         MinWidth="625"
         WindowStartupLocation="CenterOwner">
-
     <Grid>
+
+        <Menu VerticalAlignment="Top"
+              Background="{DynamicResource {x:Static SystemColors.MenuBrushKey}}"
+              BorderThickness="0,0,0,2">
+            <MenuItem Header="_Projekte">
+                <MenuItem Header="_Neues Projekt erstellen"
+                          Command="{Binding CreateProjectCommand}" />
+                <MenuItem Header="Alle _Aktivitäten anzeigen"
+                          Command="{Binding ShowProjectDetailsCommand}" />
+                <MenuItem Header="Arbeits_zeit Übersicht"
+                          Command="{Binding ShowProjectDayDetailsCommand}" />
+                <MenuItem Header="Arbeitszeit _Bericht erstellen" />
+            </MenuItem>
+            <MenuItem Header="_Aktivitäten">
+                <MenuItem Header="_Neue Aktivität erstellen"
+                          Command="{Binding CreateActivityCommand}" />
+                <MenuItem Header="Ausgewählte Aktivität _löschen"
+                          Command="{Binding DeleteActivityCommand}" />
+                <MenuItem Header="_Zeiten anzeigen"
+                          Command="{Binding ShowDetailsCommand}" />
+            </MenuItem>
+            <MenuItem Header="_Hilfe" Command="{Binding ShowHelpCommand}"></MenuItem>
+        </Menu>
 
         <Label Content="Aktivität:"
                HorizontalAlignment="Left"
                VerticalAlignment="Top"
                Height="26"
-               Margin="0,5,0,0" />
+               Margin="3,28,0,0" />
         <TextBox TabIndex="0"
                  IsEnabled="{Binding EditActivityCondition}"
                  Height="26"
-                 Margin="87,5,0,0"
+                 Margin="90,28,0,0"
                  TextWrapping="Wrap"
                  Text="{Binding SelectedActivity.Description, UpdateSourceTrigger=PropertyChanged}"
                  VerticalAlignment="Top"
                  HorizontalAlignment="Left"
-                 Width="520" />
+                 Width="551" />
 
         <Button TabIndex="1"
                 Content="(Re-)Start"
                 Command="{Binding StartWorkCommand}"
                 HorizontalAlignment="Left"
-                Margin="0,36,0,0"
+                Margin="3,59,0,0"
                 Height="35"
                 VerticalAlignment="Top"
                 Width="75" />
@@ -39,7 +61,7 @@
                 Content="Stopp"
                 Command="{Binding StopWorkCommand}"
                 HorizontalAlignment="Left"
-                Margin="80,36,0,0"
+                Margin="83,59,0,0"
                 VerticalAlignment="Top"
                 Width="75"
                 Height="35" />
@@ -47,14 +69,14 @@
                 Content="Neu ..."
                 Command="{Binding Path=CreateActivityCommand}"
                 HorizontalAlignment="Left"
-                Margin="160,36,0,0"
+                Margin="163,59,0,0"
                 VerticalAlignment="Top"
                 Width="100"
                 Height="35" />
         <Button Content="Details"
                 Command="{Binding Path=ShowDetailsCommand}"
                 HorizontalAlignment="Left"
-                Margin="265,36,0,0"
+                Margin="268,59,0,0"
                 VerticalAlignment="Top"
                 Width="100"
                 Height="35" />
@@ -62,15 +84,23 @@
                 Content="Löschen"
                 Command="{Binding Path=DeleteActivityCommand}"
                 HorizontalAlignment="Left"
-                Margin="370,36,0,0"
+                Margin="373,59,0,0"
                 VerticalAlignment="Top"
                 Width="100"
                 Height="35" />
 
+        <ProgressBar Name="WorkingProgressBar"
+                     Foreground="AntiqueWhite"
+                     HorizontalAlignment="Left"
+                     Height="35"
+                     Margin="478,59,0,0"
+                     VerticalAlignment="Top"
+                     Width="163" />
+
         <ListView TabIndex="5"
                   x:Name="list"
                   IsEnabled="{Binding SelectActivityCondition}"
-                  Margin="0,76,10,87"
+                  Margin="0,99,10,87"
                   ItemsSource="{Binding Activities, UpdateSourceTrigger=PropertyChanged}"
                   SelectedItem="{Binding SelectedActivity, UpdateSourceTrigger=PropertyChanged}">
             <ListView.View>
@@ -125,12 +155,13 @@
                 VerticalAlignment="Bottom"
                 Width="100"
                 Height="32" />
-        <ProgressBar Name="WorkingProgressBar"
-                     Foreground="AntiqueWhite"
-                     HorizontalAlignment="Left"
-                     Height="35"
-                     Margin="475,36,0,0"
-                     VerticalAlignment="Top"
-                     Width="132" />
+
+        <Button Content="Projekt Details"
+                Command="{Binding ShowProjectDetailsCommand}"
+                HorizontalAlignment="Left"
+                Margin="345,0,0,13"
+                VerticalAlignment="Bottom"
+                Width="100"
+                Height="32" />
     </Grid>
 </Window>

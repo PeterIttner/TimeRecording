@@ -15,9 +15,11 @@ namespace TimeRecording.Common.Navigation
         {
             NavigatorFactory.MyNavigator.Register(typeof(CreateProjectViewModel), typeof(CreateProjectView));
             NavigatorFactory.MyNavigator.Register(typeof(RecordDetailsViewModel), typeof(RecordDetailsView));
-            NavigatorFactory.MyNavigator.Register(typeof(RecordViewModel), typeof(RecordView));
+            NavigatorFactory.MyNavigator.Register(typeof(MainViewModel), typeof(RecordView));
+            NavigatorFactory.MyNavigator.Register(typeof(ProjectDetailsViewModel), typeof(ProjectDetailsView));
+            NavigatorFactory.MyNavigator.Register(typeof(ProjectDayDetailsViewModel), typeof(ProjectDayDetailsView));
 
-            NavigatorFactory.MyNavigator.NavigateTo(new RecordViewModel());
+            NavigatorFactory.MyNavigator.NavigateTo(new MainViewModel());
         }
     }
 }

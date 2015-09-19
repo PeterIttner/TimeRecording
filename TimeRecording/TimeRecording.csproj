@@ -90,19 +90,28 @@
     <Compile Include="Model\Project.cs" />
     <Compile Include="Model\RepositoryFactory.cs" />
     <Compile Include="Model\ActivityTime.cs" />
+    <Compile Include="TimeCalculation\WorkingTimeCalculator.cs" />
+    <Compile Include="ViewModel\ProjectDayDetailsViewModel.cs" />
+    <Compile Include="ViewModel\ProjectDetailsViewModel.cs" />
     <Compile Include="ViewModel\RecordDetailsViewModel.cs" />
     <Compile Include="ViewModel\CreateProjectViewModel.cs" />
-    <Compile Include="ViewModel\RecordViewModel.cs" />
+    <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="Common\RelayCommand.cs" />
     <Compile Include="Model\IRepository.cs" />
     <Compile Include="View\CreateProjectView.xaml.cs">
       <DependentUpon>CreateProjectView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\ProjectDayDetailsView.xaml.cs">
+      <DependentUpon>ProjectDayDetailsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\ProjectDetailsView.xaml.cs">
+      <DependentUpon>ProjectDetailsView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\RecordDetailsView.xaml.cs">
       <DependentUpon>RecordDetailsView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\RecordView.xaml.cs">
-      <DependentUpon>RecordView.xaml</DependentUpon>
+    <Compile Include="View\MainView.xaml.cs">
+      <DependentUpon>MainView.xaml</DependentUpon>
     </Compile>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
@@ -112,11 +121,19 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="View\ProjectDayDetailsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\ProjectDetailsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\RecordDetailsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\RecordView.xaml">
+    <Page Include="View\MainView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
