@@ -25,7 +25,19 @@ namespace TimeRecording.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("CurrentProjects")]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string LastWorkingProject {
+            get {
+                return ((string)(this["LastWorkingProject"]));
+            }
+            set {
+                this["LastWorkingProject"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("MyProjects")]
         public string StorageFolder {
             get {
                 return ((string)(this["StorageFolder"]));

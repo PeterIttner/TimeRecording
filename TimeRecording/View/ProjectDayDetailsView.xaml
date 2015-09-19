@@ -3,14 +3,19 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Zeiterfassung - Arbeitszeiten anzeigen"
         Icon="../Resources/Icon.png"
-        Height="447"
-        Width="683"
-        MinHeight="400"
-        MinWidth="580"
+        Height="514"
+        Width="782"
+        MinHeight="514"
+        MinWidth="732"
         ResizeMode="NoResize"
         WindowStyle="ToolWindow"
         WindowStartupLocation="CenterOwner"
+        xmlns:l="clr-namespace:TimeRecording.Common.Converter"
         ShowInTaskbar="False">
+    <Window.Resources>
+        <l:BoolToBrushConverter x:Key="converter" />
+    </Window.Resources>
+
     <Grid Margin="0,0,4,1">
 
         <Label Content="Arbeitszeiten für Projekt: "
@@ -22,7 +27,7 @@
                VerticalAlignment="Top" />
 
         <ListView TabIndex="0"
-                  Margin="10,36,10,46"
+                  Margin="10,36,10,112"
                   ItemsSource="{Binding WorkingTimes, UpdateSourceTrigger=PropertyChanged}">
             <ListView.View>
                 <GridView>
@@ -32,7 +37,7 @@
                     <GridViewColumn Width="140"
                                     Header="Arbeitszeit"
                                     DisplayMemberBinding="{Binding WorkingTime, StringFormat=hh\\:mm\\:ss}" />
-                    <GridViewColumn Width="360"
+                    <GridViewColumn Width="440"
                                     Header="Aktivitäten"
                                     DisplayMemberBinding="{Binding Activities}" />
                 </GridView>
@@ -40,10 +45,29 @@
         </ListView>
         <Label Content="Gesamte Arbeitszeit in diesem Projekt: "
                HorizontalAlignment="Left"
-               Margin="10,382,0,0"
+               Margin="23,383,0,0"
                VerticalAlignment="Top" />
         <Label Content="{Binding TotalWorkingTime}"
-               Margin="231,382,10,0"
+               Margin="244,383,10,0"
+               HorizontalAlignment="Left"
+               VerticalAlignment="Top" />
+        <Label Content="Geplantes Zeit-Budget für dieses Projekt: "
+               HorizontalAlignment="Left"
+               Margin="10,414,0,0"
+               VerticalAlignment="Top" />
+        <Label Content="Projekt Status: "
+               HorizontalAlignment="Left"
+               Margin="150,445,0,0"
+               VerticalAlignment="Top" />
+        <Label Content="{Binding TimeBudget}"
+               Margin="244,414,0,0"
+               VerticalAlignment="Top"
+               HorizontalAlignment="Left" />
+        <Label Content="{Binding ProjectStatus}"
+               HorizontalAlignment="Left"
+               Foreground="{Binding ProjectStatusFlag, Converter={StaticResource converter}}"
+               FontWeight="ExtraBold"
+               Margin="244,445,0,0"
                VerticalAlignment="Top" />
 
     </Grid>

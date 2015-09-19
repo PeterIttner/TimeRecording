@@ -7,8 +7,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TimeRecording.Common.Logging;
+using TimeRecording.Model;
 
-namespace TimeRecording.Model
+namespace TimeRecording.IO.Repository
 {
     public class FileRepository : IRepository
     {
@@ -53,16 +54,23 @@ namespace TimeRecording.Model
             }
         }
 
+        public void DeleteProject(Project project)
+        {
+            var filename = GetFilenameForProject(project);
+            mProjects.Remove(project);
+            File.Delete(filename);
+        }
+
         public bool IsProjectNameValid(string name)
         {
             var dummyProject = new Project { Name = name };
-            if(name == null || name.Length < 2 || name.Any(c => Path.GetInvalidFileNameChars().Contains(c))) {
-                return false;
-            }
-            if(File.Exists(GetFilenameForProject(dummyProject))) {
-                return false;
-            }
-            return true;        
+            return (name != null && name.Length >= 2 && name.Any(c => Path.GetInvalidFileNameChars().Contains(c)) == false);
+        }
+
+        public bool IsProjectExisting(string name)
+        {
+            var dummyProject = new Project { Name = name };
+            return File.Exists(GetFilenameForProject(dummyProject));
         }
 
         #endregion
@@ -113,5 +121,7 @@ namespace TimeRecording.Model
         }
 
         #endregion
+
+
     }
 }

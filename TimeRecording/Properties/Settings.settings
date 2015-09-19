@@ -2,8 +2,11 @@
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="TimeRecording.Properties" GeneratedClassName="Settings">
   <Profiles />
   <Settings>
+    <Setting Name="LastWorkingProject" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
     <Setting Name="StorageFolder" Type="System.String" Scope="User">
-      <Value Profile="(Default)">CurrentProjects</Value>
+      <Value Profile="(Default)">MyProjects</Value>
     </Setting>
   </Settings>
 </SettingsFile>

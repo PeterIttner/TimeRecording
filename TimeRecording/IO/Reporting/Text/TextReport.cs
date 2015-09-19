@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using TimeRecording.Model;
 using TimeRecording.TimeCalculation;
 
-namespace TimeRecording.Reporting.Text
+namespace TimeRecording.IO.Reporting.Text
 {
     public class TextReport {
      #region Member

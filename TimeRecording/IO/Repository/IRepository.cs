@@ -7,13 +7,15 @@ using System.Text;
 using TimeRecording.Common;
 using TimeRecording.Model;
 
-namespace TimeRecording.Model
+namespace TimeRecording.IO.Repository
 {
     public interface IRepository
     {
         void Persist();
+        void DeleteProject(Project project);
         Project CreateEmptyProject(string name);
         ObservableCollection<Project> GetProjects();
         bool IsProjectNameValid(string name);
+        bool IsProjectExisting(string name);
     }
 }

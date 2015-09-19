@@ -30,8 +30,10 @@ namespace TimeRecording.ViewModel
         public ProjectDayDetailsViewModel(Project project)
         {
             ProjectName = project.Name;
-            TotalWorkingTime = FormatTotalDuration(mCalculator.CalculateTotalDuration(project));
+            TotalWorkingTime = FormatDuration(mCalculator.CalculateTotalDuration(project));
             WorkingTimes = new ObservableCollection<WorkTime>(mCalculator.GetWorkingTimesOfProjectPerDay(project));
+            TimeBudget = project.TimeBudget.HasValue ? FormatDuration(project.TimeBudget.Value) : "Unbegrenzt";
+            ProjectStatus = GetProjectStatus(project);
         }
 
         #endregion
@@ -66,6 +68,48 @@ namespace TimeRecording.ViewModel
             }
         }
 
+        private string mProjectStatus;
+        public string ProjectStatus
+        {
+            get
+            {
+                return mProjectStatus;
+            }
+            set
+            {
+                mProjectStatus = value;
+                NotifyPropertyChanged("ProjectStatus");
+            }
+        }
+
+        private string mTimeBudget;
+        public string TimeBudget
+        {
+            get
+            {
+                return mTimeBudget;
+            }
+            set
+            {
+                mTimeBudget = value;
+                NotifyPropertyChanged("TimeBudget");
+            }
+        }
+
+        private bool mProjectStatusFlag;
+        public bool ProjectStatusFlag
+        {
+            get
+            {
+                return mProjectStatusFlag;
+            }
+            set
+            {
+                mProjectStatusFlag = value;
+                NotifyPropertyChanged("ProjectStatusFlag");
+            }
+        }
+
 
         private ObservableCollection<WorkTime> mWorkingTimes;
         public ObservableCollection<WorkTime> WorkingTimes
@@ -73,7 +117,6 @@ namespace TimeRecording.ViewModel
             get { return mWorkingTimes; }
             set { mWorkingTimes = value; }
         }
-
 
         #endregion
 
@@ -92,14 +135,36 @@ namespace TimeRecording.ViewModel
 
         #region Private Helpers
 
-        private string FormatTotalDuration(TimeSpan totalTime)
+        private string FormatDuration(TimeSpan totalTime)
         {
             var totalManDays = totalTime.TotalDays * 3; // * 24 / 8
             var totalHours = totalTime.TotalHours;
             var totalMinutes = totalTime.TotalMinutes;
             var totalSeconds = totalTime.TotalSeconds;
 
-            return string.Format("{0:0.00000} Manntage ≙ {1:0.00} Stunden ≙ {2:0.00} Minuten ≙ {3:0.00} Sekunden", totalManDays, totalHours, totalMinutes, totalSeconds);
+            return string.Format("{0:0.##} Manntage ≙ {1:0.##} Stunden ≙ {2} Minuten ≙ {3} Sekunden", totalManDays, totalHours, totalMinutes, totalSeconds);
+        }
+
+        private string GetProjectStatus(Project project)
+        {
+            var currentProjectDuration = mCalculator.CalculateTotalDuration(project);
+            if (project.TimeBudget.HasValue == false)
+            {
+                ProjectStatusFlag = true;
+                return "Im Zeitplan - Rest Budget: Unbegrenzt";
+            }
+            else if (project.TimeBudget.Value > currentProjectDuration)
+            {
+                var remainingHours = (project.TimeBudget.Value - currentProjectDuration).TotalHours;
+                ProjectStatusFlag = true;
+                return string.Format("Im Zeitplan - Rest Budget: {0:0.##} Stunden", remainingHours);
+            }
+            else
+            {
+                var tooMuchHours = (currentProjectDuration - project.TimeBudget.Value).TotalHours;
+                ProjectStatusFlag = false;
+                return string.Format("Zeit-Budget um {0:0.##} Stunden überzogen", tooMuchHours);
+            }
         }
 
         #endregion

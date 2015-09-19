@@ -15,10 +15,12 @@ using System.Windows.Input;
 using TimeRecording.Common;
 using TimeRecording.Common.Logging;
 using TimeRecording.Common.Navigation;
+using TimeRecording.IO.Export;
+using TimeRecording.IO.Import;
+using TimeRecording.IO.Reporting.Excel;
+using TimeRecording.IO.Reporting.Text;
+using TimeRecording.IO.Repository;
 using TimeRecording.Model;
-using TimeRecording.Reporting;
-using TimeRecording.Reporting.Excel;
-using TimeRecording.Reporting.Text;
 using TimeRecording.TimeCalculation;
 using TimeRecording.View;
 
@@ -46,7 +48,16 @@ namespace TimeRecording.ViewModel
             Projects = MyRepository.GetProjects();
             if (Projects.Count > 0)
             {
-                SelectedProject = Projects.First();
+                var lastProject = Projects.FirstOrDefault(p => p.Name.Equals(Properties.Settings.Default.LastWorkingProject));
+                if (lastProject != null)
+                {
+                    SelectedProject = lastProject;
+                }
+                else
+                {
+                    SelectedProject = Projects.First();
+                }
+                
                 Activities = new ObservableCollection<Activity>(SelectedProject.Activities);
                 if (Activities.Count > 0)
                 {
@@ -97,6 +108,9 @@ namespace TimeRecording.ViewModel
                 TotalDuration = FormatTotalDuration(mCalculator.CalculateTotalDuration(value));
                 Activities = value == null ? null : value.Activities;
                 SelectedActivity = null;
+
+                Properties.Settings.Default.LastWorkingProject = value != null ? value.Name : string.Empty;
+                Properties.Settings.Default.Save();
 
                 NotifyPropertyChanged("EditActivityCondition");
                 NotifyPropertyChanged("SelectActivityCondition");
@@ -187,6 +201,9 @@ namespace TimeRecording.ViewModel
         public ICommand ShowOnlineHelpCommand { get; set; }
         public ICommand ShowCreditsCommand { get; set; }
         public ICommand ExportReportCommand { get; set; }
+        public ICommand ExportProjectsCommand { get; set; }
+        public ICommand ImportProjectsCommand { get; set; }
+        public ICommand EditProjectCommand { get; set; }
 
         private void InitCommands()
         {
@@ -201,7 +218,107 @@ namespace TimeRecording.ViewModel
             ShowOnlineHelpCommand = new RelayCommand(o => ShowOnlineHelpHandler(), o => true);
             ShowCreditsCommand = new RelayCommand(o => ShowCreditsHandler(), o => true);
             ExportReportCommand = new RelayCommand(o => ExportReportHandler(), o => ExportReportCondition());
+            ExportProjectsCommand = new RelayCommand(o => ExportProjectsHandler(), o => ExportProjectsCondition());
+            ImportProjectsCommand = new RelayCommand(o => ImportProjectsHandler(), o => ImportProjectsCondition());
+            EditProjectCommand = new RelayCommand(o => EditProjectHandler(), o => EditProjectCondition());
         }
+
+        #region Edit Project
+
+        private bool EditProjectCondition()
+        {
+            return Projects.Count > 0 && SelectedProject != null && NotInProgress;
+        }
+
+        private void EditProjectHandler()
+        {
+            NavigatorFactory.MyNavigator.NavigateTo(new EditProjectViewModel(SelectedProject));
+            NotifyPropertyChanged("SelectProjectCondition");
+            if (SelectedProject == null && Projects.Count > 0)
+            {
+                SelectedProject = Projects.First();
+            }
+            else if(SelectedProject != null && Projects.Count > 0)
+            {
+                Properties.Settings.Default.LastWorkingProject = SelectedProject != null ? SelectedProject.Name : string.Empty;
+                Properties.Settings.Default.Save();
+            }
+        }
+
+        #endregion
+        //TODO: Export/Import weiter auslagern
+
+        #region Import Projects
+
+        private bool ImportProjectsCondition()
+        {
+            return NotInProgress;
+        }
+
+        private void ImportProjectsHandler()
+        {
+            var dialog = new OpenFileDialog();
+            dialog.DereferenceLinks = true;
+            dialog.Multiselect = false;
+            dialog.AddExtension = true;
+            dialog.CheckFileExists = false;
+            dialog.CheckPathExists = true;
+            dialog.Filter = "Projekt-Export|*.projects";
+            dialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
+            dialog.Title = "Projekte importieren";
+            dialog.FileName = "work";
+            if (NavigatorFactory.MyNavigator.NavigateToSystemDialog(dialog) == true)
+            {
+                var loadedProjects = new ProjectsImporter(dialog.FileName).Import();
+                foreach (var loadedProject in loadedProjects)
+                {
+                    var projectName = loadedProject.Name;
+                    for (int i = 0; Projects.Any(p => p.Name.Equals(projectName)); i++)
+                    {
+                        projectName = string.Format("{0}_{1}", loadedProject.Name, i);
+                    }
+                    loadedProject.Name = projectName;
+                    Projects.Add(loadedProject);
+                }
+                // Choose newly imported project when there was none selected before
+                if (SelectedProject == null && Projects.Count > 0)
+                {
+                    SelectedProject = Projects.First();
+                    Activities = SelectedProject.Activities;
+                    SelectedActivity = null;
+                    NotifyPropertyChanged("");
+                }
+                MyRepository.Persist();
+            }
+        }
+
+        #endregion
+
+        #region Export Projects
+
+        private bool ExportProjectsCondition()
+        {
+            return Projects.Count > 0 && NotInProgress;
+        }
+
+        private void ExportProjectsHandler()
+        {
+            var dialog = new SaveFileDialog();
+            dialog.AddExtension = true;
+            dialog.CheckFileExists = false;
+            dialog.CheckPathExists = true;
+            dialog.CreatePrompt = false;
+            dialog.Filter = "Projekt-Export|*.projects";
+            dialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
+            dialog.Title = "Alle Projekte exportieren";
+            dialog.FileName = "work";
+            if (NavigatorFactory.MyNavigator.NavigateToSystemDialog(dialog) == true)
+            {
+                new ProjectsExporter(Projects.ToList()).Export(dialog.FileName);
+            }
+        }
+
+        #endregion
 
         #region Show Credits
 
@@ -299,6 +416,7 @@ namespace TimeRecording.ViewModel
             {
                 SelectedProject = newProject;
             }
+            NotifyPropertyChanged("SelectProjectCondition");
         }
 
         #endregion

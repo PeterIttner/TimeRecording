@@ -18,17 +18,23 @@
               DockPanel.Dock="Top"
               Background="{DynamicResource {x:Static SystemColors.MenuBrushKey}}"
               BorderThickness="0,0,0,2">
-            <MenuItem Header="_Projekte">
+            <MenuItem Header="_Projekt">
                 <MenuItem Header="_Neues Projekt erstellen"
                           Command="{Binding CreateProjectCommand}" />
+                <MenuItem Header="Ausgewähltes Projekt _bearbeiten"
+                          Command="{Binding EditProjectCommand}" />
                 <MenuItem Header="Alle _Aktivitäten anzeigen"
                           Command="{Binding ShowProjectDetailsCommand}" />
                 <MenuItem Header="Arbeits_zeit Übersicht"
                           Command="{Binding ShowProjectDayDetailsCommand}" />
                 <MenuItem Header="Arbeitszeit _Bericht erstellen"
                           Command="{Binding ExportReportCommand}" />
+                <MenuItem Header="Projekte _exportieren"
+                          Command="{Binding ExportProjectsCommand}" />
+                <MenuItem Header="Projekte _importieren"
+                          Command="{Binding ImportProjectsCommand}" />
             </MenuItem>
-            <MenuItem Header="_Aktivitäten">
+            <MenuItem Header="_Aktivität">
                 <MenuItem Header="_Neue Aktivität erstellen"
                           Command="{Binding CreateActivityCommand}" />
                 <MenuItem Header="Ausgewählte Aktivität _löschen"
@@ -58,7 +64,7 @@
                           ItemsSource="{Binding Projects}"
                           SelectedItem="{Binding SelectedProject}"
                           DisplayMemberPath="Name"
-                          Width="100"
+                          Width="205"
                           Height="32"
                           Margin="74,0,0,0"
                           VerticalAlignment="Top"
@@ -70,16 +76,22 @@
                         HorizontalAlignment="Left"
                         Width="100"
                         Height="32"
-                        Margin="179,0,0,0"
+                        Margin="74,37,0,0"
                         Command="{Binding CreateProjectCommand}" />
-
+                <Button Content="Bearbeiten"
+                        Command="{Binding EditProjectCommand}"
+                        VerticalAlignment="Top"
+                        HorizontalAlignment="Left"
+                        Width="100"
+                        Height="32"
+                        Margin="179,37,0,0" />
                 <Button Content="Details"
                         Command="{Binding ShowProjectDetailsCommand}"
                         VerticalAlignment="Top"
                         HorizontalAlignment="Left"
                         Width="100"
                         Height="32"
-                        Margin="284,0,0,0" />
+                        Margin="284,37,0,0" />
             </Grid>
         </GroupBox>
 

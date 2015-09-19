@@ -81,6 +81,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Windows" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -98,6 +99,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Common\Converter\BaseConverter.cs" />
+    <Compile Include="Common\Converter\BoolToBrushConverter.cs" />
     <Compile Include="Common\Navigation\Bootstrapper.cs" />
     <Compile Include="Common\Logging\FileLogger.cs" />
     <Compile Include="Common\Logging\LoggerFactory.cs" />
@@ -105,27 +108,33 @@
     <Compile Include="Common\Navigation\INavigator.cs" />
     <Compile Include="Common\Navigation\Navigator.cs" />
     <Compile Include="Common\Navigation\NavigatorFactory.cs" />
+    <Compile Include="IO\Export\ProjectsExporter.cs" />
+    <Compile Include="IO\Import\ProjectImporter.cs" />
     <Compile Include="Model\Activity.cs" />
-    <Compile Include="Model\FileRepository.cs" />
+    <Compile Include="IO\Repository\FileRepository.cs" />
     <Compile Include="Model\Project.cs" />
-    <Compile Include="Model\RepositoryFactory.cs" />
+    <Compile Include="IO\Repository\RepositoryFactory.cs" />
     <Compile Include="Model\ActivityTime.cs" />
-    <Compile Include="Reporting\Excel\ExcelReport.cs" />
-    <Compile Include="Reporting\Text\TextReport.cs" />
+    <Compile Include="IO\Reporting\Excel\ExcelReport.cs" />
+    <Compile Include="IO\Reporting\Text\TextReport.cs" />
     <Compile Include="TimeCalculation\WorkingTimeCalculator.cs" />
     <Compile Include="ViewModel\CreditsViewModel.cs" />
+    <Compile Include="ViewModel\EditProjectViewModel.cs" />
     <Compile Include="ViewModel\ProjectDayDetailsViewModel.cs" />
     <Compile Include="ViewModel\ProjectDetailsViewModel.cs" />
     <Compile Include="ViewModel\RecordDetailsViewModel.cs" />
     <Compile Include="ViewModel\CreateProjectViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="Common\RelayCommand.cs" />
-    <Compile Include="Model\IRepository.cs" />
+    <Compile Include="IO\Repository\IRepository.cs" />
     <Compile Include="View\CreateProjectView.xaml.cs">
       <DependentUpon>CreateProjectView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\CreditsView.xaml.cs">
       <DependentUpon>CreditsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\EditProjectView.xaml.cs">
+      <DependentUpon>EditProjectView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\ProjectDayDetailsView.xaml.cs">
       <DependentUpon>ProjectDayDetailsView.xaml</DependentUpon>
@@ -148,6 +157,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\CreditsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\EditProjectView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

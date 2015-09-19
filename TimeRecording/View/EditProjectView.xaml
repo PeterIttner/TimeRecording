@@ -1,55 +1,63 @@
-﻿<Window x:Class="TimeRecording.View.CreateProjectView"
+﻿<Window x:Class="TimeRecording.View.EditProjectView"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Zeiterfassung - Neues Projekt anlegen"
+        Title="Zeiterfassung - Projekt bearbeiten"
         Icon="../Resources/Icon.png"
-        Height="150.5"
-        Width="550"
+        Height="144.667"
+        Width="476"
         ResizeMode="NoResize"
         WindowStyle="ToolWindow"
         WindowStartupLocation="CenterOwner"
         ShowInTaskbar="False">
     <Grid Margin="0,0,0,6"
           FocusManager.FocusedElement="{Binding ElementName=ProjectNameTextBox}">
-        <Label Content="Projektname: "
+        <Label Content="Projektname ändern: "
                HorizontalAlignment="Left"
                VerticalAlignment="Top"
                Height="26"
-               Margin="118,10,0,0" />
+               Margin="22,10,0,0" />
         <TextBox Name="ProjectNameTextBox"
                  TabIndex="0"
                  Height="26"
-                 Margin="220,10,0,0"
+                 Margin="150,11,0,0"
                  TextWrapping="Wrap"
                  Text="{Binding ProjectName, UpdateSourceTrigger=PropertyChanged}"
                  VerticalAlignment="Top"
                  HorizontalAlignment="Left"
                  Width="302" />
-        <Label Content="Projekt Budget (maximale Dauer): "
+        <Button TabIndex="1"
+                Content="Speichern"
+                Command="{Binding EditProjectCommand}"
+                Margin="307,72,0,0"
+                Height="32"
+                VerticalAlignment="Top"
+                HorizontalAlignment="Left"
+                Width="145" />
+        <Button TabIndex="1"
+                Content="Projekt löschen"
+                Command="{Binding DeleteProjectCommand}"
+                Margin="150,72,0,0"
+                Height="32"
+                VerticalAlignment="Top"
+                HorizontalAlignment="Left"
+                Width="152" />
+
+        <Label Content="Projekt Budget ändern: "
                HorizontalAlignment="Left"
                Margin="10,41,0,0"
                VerticalAlignment="Top" />
         <TextBox HorizontalAlignment="Left"
                  Text="{Binding TimeBudget, UpdateSourceTrigger=PropertyChanged}"
                  Height="23"
-                 Margin="220,41,0,0"
+                 Margin="150,41,0,0"
                  TextWrapping="Wrap"
                  VerticalAlignment="Top"
                  Width="152" />
         <ComboBox HorizontalAlignment="Left"
                   ItemsSource="{Binding TimeBudgetUnits}"
                   SelectedItem="{Binding SelectedTimeBudgetUnit}"
-                  Margin="377,42,0,0"
+                  Margin="307,42,0,0"
                   VerticalAlignment="Top"
                   Width="145" />
-
-        <Button TabIndex="1"
-                Content="Projekt erstellen"
-                Command="{Binding CreateProjectCommand}"
-                Margin="377,69,0,0"
-                Height="32"
-                VerticalAlignment="Top"
-                HorizontalAlignment="Left"
-                Width="145" />
     </Grid>
 </Window>

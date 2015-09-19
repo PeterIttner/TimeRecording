@@ -50,5 +50,20 @@ namespace TimeRecording.Model
                 mActivities = value;
             }
         }
+
+        private TimeSpan? mTimeBudget;
+        public TimeSpan? TimeBudget
+        {
+            get
+            {
+                return mTimeBudget;
+            }
+            set
+            {
+                mTimeBudget = value;
+                NotifyPropertyChanged("TimeBudget");
+            }
+        }
+
     }
 }

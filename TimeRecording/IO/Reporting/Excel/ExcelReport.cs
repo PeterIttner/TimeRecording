@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using TimeRecording.Model;
 using TimeRecording.TimeCalculation;
 
-namespace TimeRecording.Reporting.Excel
+namespace TimeRecording.IO.Reporting.Excel
 {
     public class ExcelReport
     {

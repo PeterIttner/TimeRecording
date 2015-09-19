@@ -2,12 +2,10 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using System.Windows.Shapes;
 using TimeRecording.Common;
 using TimeRecording.Common.Navigation;
 using TimeRecording.IO.Repository;
@@ -15,65 +13,30 @@ using TimeRecording.Model;
 
 namespace TimeRecording.ViewModel
 {
-    public enum TimeBudgetUnit
-    {
-        ManMonths,
-        ManDays,
-        Hours
-    }
-
-    public static class TimeBudgetUnitExtension
-    {
-        public static string ToReadableString(this TimeBudgetUnit unit)
-        {
-            if (unit == TimeBudgetUnit.Hours)
-            {
-                return "H (Stunden)";
-            }
-            else if (unit == TimeBudgetUnit.ManDays)
-            {
-                return "MT (Manntage)";
-            }
-            else
-            {
-                return "MM (Mannmonate)";
-            }
-        }
-
-        public static TimeBudgetUnit FromReadableString(this string humanReadableUnit)
-        {
-            if (humanReadableUnit.Equals("H (Stunden)"))
-            {
-                return TimeBudgetUnit.Hours;
-            }
-            else if (humanReadableUnit.Equals("MT (Manntage)"))
-            {
-                return TimeBudgetUnit.ManDays;
-            }
-            else
-            {
-                return TimeBudgetUnit.ManMonths;
-            }
-        }
-    }
-
-
-    public class CreateProjectViewModel : INotifyPropertyChanged
+    public class EditProjectViewModel : INotifyPropertyChanged
     {
         #region Member
 
         private IRepository CurrentRepository = RepositoryFactory.CurrentRepository;
-        private ObservableCollection<Project> mProjects;
+        private Project mProject;
 
         #endregion
 
-        #region C'tor
+        #region Construction
 
-        public CreateProjectViewModel(ObservableCollection<Project> projects)
-        {           
-            mProjects = projects;
+        public EditProjectViewModel(Project project)
+        {
+            mProject = project;
+            ProjectName = project.Name;
 
-            TimeBudget = string.Empty;
+            if (project.TimeBudget.HasValue)
+            {
+                TimeBudget = project.TimeBudget.Value.TotalHours.ToString("0.00");
+            }
+            else
+            {
+                TimeBudget = string.Empty;
+            }
             TimeBudgetUnits = new ObservableCollection<string>();
             TimeBudgetUnits.Add(TimeBudgetUnit.Hours.ToReadableString());
             TimeBudgetUnits.Add(TimeBudgetUnit.ManDays.ToReadableString());
@@ -83,9 +46,24 @@ namespace TimeRecording.ViewModel
             InitCommands();
         }
 
+
         #endregion
 
         #region Model
+
+        private string mProjectName;
+        public string ProjectName
+        {
+            get
+            {
+                return mProjectName;
+            }
+            set
+            {
+                mProjectName = value;
+                NotifyPropertyChanged("ProjectName");
+            }
+        }
 
         private ObservableCollection<string> mTimeBudgetUnits;
         public ObservableCollection<string> TimeBudgetUnits
@@ -128,50 +106,66 @@ namespace TimeRecording.ViewModel
             }
         }
 
-
-        private string mProjectName;
-        public string ProjectName
-        {
-            get
-            {
-                return mProjectName;
-            }
-            set
-            {
-                mProjectName = value;
-                NotifyPropertyChanged("ProjectName");
-            }
-        }
-
         #endregion
 
         #region Commands
 
-        public ICommand CreateProjectCommand { get; set; }
+        public ICommand EditProjectCommand { get; set; }
+        public ICommand DeleteProjectCommand { get; set; }
 
         private void InitCommands()
         {
-            CreateProjectCommand = new RelayCommand(o => CreateProjectHandler(), o => CreateProjectCondition());
+            this.EditProjectCommand = new RelayCommand(o => EditProjectHandler(), o => EditProjectCondition());
+            this.DeleteProjectCommand = new RelayCommand(o => DeleteProjectHandler(), o => DeleteProjectCondition());
         }
+       
+        #region Delete Project
 
-        #region Create Project
-
-        private void CreateProjectHandler()
+        private void DeleteProjectHandler()
         {
-            mProjects.Add(new Project { Name = ProjectName, TimeBudget = GetTimeBudget() });
+            RepositoryFactory.CurrentRepository.DeleteProject(mProject);
             NavigatorFactory.MyNavigator.NavigateBack();
         }
 
-        private bool CreateProjectCondition()
+        private bool DeleteProjectCondition()
         {
-            return !CurrentRepository.IsProjectExisting(ProjectName) && CurrentRepository.IsProjectNameValid(ProjectName);
+            return mProject != null;
+        }
+
+        #endregion
+
+        #region Edit Project
+
+        private void EditProjectHandler()
+        {
+            mProject.Name = mProjectName;
+            mProject.TimeBudget = GetTimeBudget();
+            NavigatorFactory.MyNavigator.NavigateBack();
+        }
+
+        private bool EditProjectCondition()
+        {
+            return CurrentRepository.IsProjectNameValid(ProjectName);
         }
 
         #endregion
 
         #endregion
 
-        #region Private Helpers
+        #region Common
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        private void NotifyPropertyChanged(string property)
+        {
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(property));
+            }
+        }
+
+        #endregion
+
+        #region Private Helper
 
         private TimeSpan? GetTimeBudget()
         {
@@ -199,18 +193,6 @@ namespace TimeRecording.ViewModel
 
         #endregion
 
-        #region Common
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        private void NotifyPropertyChanged(string property)
-        {
-            if (PropertyChanged != null)
-            {
-                PropertyChanged(this, new PropertyChangedEventArgs(property));
-            }
-        }
-
-        #endregion
-
     }
 }
+
