@@ -1,7 +1,7 @@
 # TimeRecording
 Time/Work-Tracking for freelancers or single individuals
 
-![ExcelToHtml Logo](https://raw.githubusercontent.com/piah/timerecording/master/TimeRecording.Docs/logo.jpg)
+<img src="https://raw.githubusercontent.com/piah/timerecording/master/TimeRecording.Docs/logo.jpg" width="250">
 
 TimeRecording is a small tool for recording your work time.
 It is meant to be used while working in several parallel projects.
@@ -16,14 +16,14 @@ msbuild -t:Clean,Build
 ```
 ## Screenshots
 
-### Create a new Project
+Create a new Project
 
-![Create a new Project](https://raw.githubusercontent.com/piah/timerecording/master/TimeRecording.Docs/screenshot_01.png)
+<img src="https://raw.githubusercontent.com/piah/timerecording/master/TimeRecording.Docs/screenshot_01.png" alt="Create a new project" width="300">
 
-### Track your time
+Track your time
 
-![Track your Time](https://raw.githubusercontent.com/piah/timerecording/master/TimeRecording.Docs/screenshot_02.png)
+<img src="https://raw.githubusercontent.com/piah/timerecording/master/TimeRecording.Docs/screenshot_02.png" alt="Track your time" width="300">
 
-### Check if you are still within your budget
+Check if you are still within your budget
 
-![An example result](https://raw.githubusercontent.com/piah/timerecording/master/TimeRecording.Docs/screenshot_03.png)
+<img src="https://raw.githubusercontent.com/piah/timerecording/master/TimeRecording.Docs/screenshot_03.png" alt="Check your budget" width="300">
